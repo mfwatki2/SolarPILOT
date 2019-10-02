@@ -76,44 +76,45 @@ void SPFrame::CreateSimulationsFluxTab( wxScrolledWindow *flux)
         *sigma_sizer = new wxBoxSizer(wxVERTICAL),
         *dist_sizer = new wxBoxSizer(wxVERTICAL);
 
-    InputControl
-        *flux_model = new InputControl(flux, wxID_ANY, _variables.flux.flux_model ),
-        *flux_time_type = new InputControl(flux, wxID_ANY, _variables.flux.flux_time_type ),
-        *flux_dni = new InputControl(flux, wxID_ANY, _variables.flux.flux_dni ),
-        *aim_method = new InputControl(flux, wxID_ANY, _variables.flux.aim_method ),
-        *sigma_limit_x = new InputControl(sigma_panel, wxID_ANY, _variables.flux.sigma_limit_x ),
-        *sigma_limit_y = new InputControl(sigma_panel, wxID_ANY, _variables.flux.sigma_limit_y ),
-        *norm_dist_sigma = new InputControl(dist_panel, wxID_ANY, _variables.flux.norm_dist_sigma ),
-        *flux_dist = new InputControl(sigma_panel, wxID_ANY, _variables.flux.flux_dist ),
-        *flux_month = new InputControl(time_panel, wxID_ANY, _variables.flux.flux_month ),
-        *flux_day = new InputControl(time_panel, wxID_ANY, _variables.flux.flux_day ),
-        *flux_hour = new InputControl(time_panel, wxID_ANY, _variables.flux.flux_hour ),
-        *flux_solar_az_in = new InputControl(azel_panel, wxID_ANY, _variables.flux.flux_solar_az_in ),
-        *flux_solar_el_in = new InputControl(azel_panel, wxID_ANY, _variables.flux.flux_solar_el_in ),
-        *x_res = new InputControl(flux, wxID_ANY, _variables.flux.x_res ),
-        *y_res = new InputControl(flux, wxID_ANY, _variables.flux.y_res ),
-        *min_rays = new InputControl(soltrace_panel, wxID_ANY, _variables.flux.min_rays ),
-        *max_rays = new InputControl(soltrace_panel, wxID_ANY, _variables.flux.max_rays ),
-        *seed = new InputControl(soltrace_panel, wxID_ANY, _variables.flux.seed ),
-        *save_data = new InputControl(soltrace_panel, wxID_ANY, _variables.flux.save_data ),
-        *is_save_raydata = new InputControl(soltrace_panel, wxID_ANY, _variables.flux.is_save_raydata ),
-        *is_load_raydata = new InputControl(soltrace_panel, wxID_ANY, _variables.flux.is_load_raydata ),
-        *raydata_file = new InputControl(soltrace_panel, wxID_ANY, _variables.flux.raydata_file ),
-        *is_sunshape_err = new InputControl(soltrace_panel, wxID_ANY, _variables.flux.is_sunshape_err ),
-        *is_optical_err = new InputControl(soltrace_panel, wxID_ANY, _variables.flux.is_optical_err ),
-        *is_cloudy = new InputControl(flux, wxID_ANY, _variables.flux.is_cloudy ),
-        *cloud_shape = new InputControl(cloud_panel, wxID_ANY, _variables.flux.cloud_shape ),
-        *cloud_width = new InputControl(cloud_panel, wxID_ANY, _variables.flux.cloud_width ),
-        *cloud_depth = new InputControl(cloud_panel, wxID_ANY, _variables.flux.cloud_depth ),
-        *cloud_opacity = new InputControl(cloud_panel, wxID_ANY, _variables.flux.cloud_opacity ),
-        *cloud_skew = new InputControl(cloud_panel, wxID_ANY, _variables.flux.cloud_skew ),
-        *cloud_loc_x = new InputControl(cloud_panel, wxID_ANY, _variables.flux.cloud_loc_x ),
-        *cloud_loc_y = new InputControl(cloud_panel, wxID_ANY, _variables.flux.cloud_loc_y ),
-        *is_cloud_pattern = new InputControl(cloud_panel, wxID_ANY, _variables.flux.is_cloud_pattern ),
-        *is_cloud_symd = new InputControl(cloud_panel, wxID_ANY, _variables.flux.is_cloud_symd ),
-        *is_cloud_symw = new InputControl(cloud_panel, wxID_ANY, _variables.flux.is_cloud_symw ),
-        *cloud_sep_width = new InputControl(cloud_panel, wxID_ANY, _variables.flux.cloud_sep_width ),
-        *cloud_sep_depth = new InputControl(cloud_panel, wxID_ANY, _variables.flux.cloud_sep_depth );
+	InputControl
+		*flux_model = new InputControl(flux, wxID_ANY, _variables.flux.flux_model),
+		*flux_time_type = new InputControl(flux, wxID_ANY, _variables.flux.flux_time_type),
+		*flux_dni = new InputControl(flux, wxID_ANY, _variables.flux.flux_dni),
+		*aim_method = new InputControl(flux, wxID_ANY, _variables.flux.aim_method),
+		*sigma_limit_x = new InputControl(sigma_panel, wxID_ANY, _variables.flux.sigma_limit_x),
+		*sigma_limit_y = new InputControl(sigma_panel, wxID_ANY, _variables.flux.sigma_limit_y),
+		*norm_dist_sigma = new InputControl(dist_panel, wxID_ANY, _variables.flux.norm_dist_sigma),
+		*flux_dist = new InputControl(sigma_panel, wxID_ANY, _variables.flux.flux_dist),
+		*flux_month = new InputControl(time_panel, wxID_ANY, _variables.flux.flux_month),
+		*flux_day = new InputControl(time_panel, wxID_ANY, _variables.flux.flux_day),
+		*flux_hour = new InputControl(time_panel, wxID_ANY, _variables.flux.flux_hour),
+		*flux_solar_az_in = new InputControl(azel_panel, wxID_ANY, _variables.flux.flux_solar_az_in),
+		*flux_solar_el_in = new InputControl(azel_panel, wxID_ANY, _variables.flux.flux_solar_el_in),
+		*x_res = new InputControl(flux, wxID_ANY, _variables.flux.x_res),
+		*y_res = new InputControl(flux, wxID_ANY, _variables.flux.y_res),
+		*min_rays = new InputControl(soltrace_panel, wxID_ANY, _variables.flux.min_rays),
+		*max_rays = new InputControl(soltrace_panel, wxID_ANY, _variables.flux.max_rays),
+		*seed = new InputControl(soltrace_panel, wxID_ANY, _variables.flux.seed),
+		*save_data = new InputControl(soltrace_panel, wxID_ANY, _variables.flux.save_data),
+		*is_save_raydata = new InputControl(soltrace_panel, wxID_ANY, _variables.flux.is_save_raydata),
+		*is_load_raydata = new InputControl(soltrace_panel, wxID_ANY, _variables.flux.is_load_raydata),
+		*raydata_file = new InputControl(soltrace_panel, wxID_ANY, _variables.flux.raydata_file),
+		*is_sunshape_err = new InputControl(soltrace_panel, wxID_ANY, _variables.flux.is_sunshape_err),
+		*is_optical_err = new InputControl(soltrace_panel, wxID_ANY, _variables.flux.is_optical_err),
+		*is_cloudy = new InputControl(flux, wxID_ANY, _variables.flux.is_cloudy),
+		*cloud_shape = new InputControl(cloud_panel, wxID_ANY, _variables.flux.cloud_shape),
+		*cloud_width = new InputControl(cloud_panel, wxID_ANY, _variables.flux.cloud_width),
+		*cloud_depth = new InputControl(cloud_panel, wxID_ANY, _variables.flux.cloud_depth),
+		*cloud_opacity = new InputControl(cloud_panel, wxID_ANY, _variables.flux.cloud_opacity),
+		*cloud_skew = new InputControl(cloud_panel, wxID_ANY, _variables.flux.cloud_skew),
+		*cloud_loc_x = new InputControl(cloud_panel, wxID_ANY, _variables.flux.cloud_loc_x),
+		*cloud_loc_y = new InputControl(cloud_panel, wxID_ANY, _variables.flux.cloud_loc_y),
+		*is_cloud_pattern = new InputControl(cloud_panel, wxID_ANY, _variables.flux.is_cloud_pattern),
+		*is_cloud_symd = new InputControl(cloud_panel, wxID_ANY, _variables.flux.is_cloud_symd),
+		*is_cloud_symw = new InputControl(cloud_panel, wxID_ANY, _variables.flux.is_cloud_symw),
+		*cloud_sep_width = new InputControl(cloud_panel, wxID_ANY, _variables.flux.cloud_sep_width),
+		*cloud_sep_depth = new InputControl(cloud_panel, wxID_ANY, _variables.flux.cloud_sep_depth),
+		*enable_all_helios = new InputControl(flux, wxID_ANY, _variables.sf.enable_all_helios);
 
     OutputControl
         *flux_solar_az = new OutputControl(time_panel, wxID_ANY, _variables.flux.flux_solar_az),
@@ -197,7 +198,8 @@ void SPFrame::CreateSimulationsFluxTab( wxScrolledWindow *flux)
     dist_panel->SetSizer(dist_sizer);
     sigma_sizer->Add(dist_panel, 0, wxALL, 5);
     sigma_panel->SetSizer(sigma_sizer);
-    sbs1->Add(aim_method);
+	sbs1->Add(enable_all_helios);
+	sbs1->Add(aim_method);
     sbs1->Add(sigma_panel, 0, wxALL, 5);
     
     sbs1->Add(flux_model);
@@ -332,7 +334,7 @@ void SPFrame::CreateSimulationsFluxTab( wxScrolledWindow *flux)
                               max_rays, seed, save_data, is_sunshape_err, is_optical_err, is_cloudy, cloud_shape, 
                               cloud_width, cloud_depth, cloud_opacity, cloud_skew, is_cloud_pattern, cloud_sep_width, 
                               cloud_sep_depth, cloud_loc_x, cloud_loc_y, is_cloud_symd, is_cloud_symw, flux_dni, 
-                              is_load_raydata, is_save_raydata, raydata_file, NULL};
+                              is_load_raydata, is_save_raydata, raydata_file, enable_all_helios, NULL};
     int i=0;
     while(inputs[i] != NULL)
     {
@@ -651,6 +653,15 @@ void SPFrame::OnDoPerformanceSimulation( wxCommandEvent &event)
             if (GetSelectedHeliostats(helios, _flux_lc_check->GetValue())) {
                 _results.clear();
                 _results.resize(1);
+
+				if (_SF.getVarMap()->sf.enable_all_helios.val)
+				{
+					for (int i = 0; i < helios.size(); i++)
+					{
+						helios.at(i)->IsEnabled(true);
+					}
+				}
+
                 simok = DoPerformanceSimulation(_SF, _variables, helios);
             }
         }
