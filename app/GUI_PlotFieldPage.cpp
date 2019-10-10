@@ -220,6 +220,7 @@ void SPFrame::LayoutSimulationExport(SolarField &SF, wxString &fname, vector<boo
 	15 | Cloudiness efficiency
     16 | Annual energy delivery
     17 | Annual total efficiency
+	18 | Receiver number
     */
 
     wxTextFile fobj(fname);
@@ -248,6 +249,36 @@ void SPFrame::LayoutSimulationExport(SolarField &SF, wxString &fname, vector<boo
 		SF.getVarMap()->sf.dni_des.val, eol
 		);
 	fobj.AddLine(hdr);
+	
+	// Assign each receiver a number
+	int nRec = SF.getReceivers()->size();
+	unordered_map<Receiver*, int> rec_map;
+	for (int i = 0; i < nRec; i++)
+	{
+		//rec_map[SF.getReceivers()->at(i)->getVarMap()->rec_name.mapval] = i;
+		rec_map[SF.getReceivers()->at(i)] = i;
+	}
+
+	if (options.at(18))     // 18 | Receiver number
+	{
+		// Header lines with receiver keys
+		wxString Rhdr;
+		Rhdr.Printf(wxT("Receiver name,Receiver number"));
+		Rhdr.Replace(wxT(","), delim, true);
+		fobj.AddLine(Rhdr);
+
+		wxString Rdat;
+		for (unordered_map<Receiver*, int>::iterator ra = rec_map.begin(); ra != rec_map.end(); ra++)
+		{
+			Rdat.Append(wxString(ra->first->getVarMap()->rec_name.val));
+			Rdat.Append(wxString(","));
+			Rdat.Append(wxString::Format(wxT("%d"), ra->second));
+			Rdat.Replace(wxT(","), delim, true);
+			fobj.AddLine(Rdat);
+			Rdat.clear();
+		}
+		fobj.AddLine(wxString());
+	}
 
 	wxString hdat;	//header line listing data entries
 	int ind=0;
@@ -296,6 +327,8 @@ void SPFrame::LayoutSimulationExport(SolarField &SF, wxString &fname, vector<boo
     hdat.Append(options.at(ind++) ? wxT("Annual energy,") : wxEmptyString);
     //17 | Annual total efficiency
     hdat.Append(options.at(ind++) ? wxT("Annual efficiency,") : wxEmptyString);
+	//18 | Receiver number
+	hdat.Append(options.at(ind++) ? wxT("Receiver number,") : wxEmptyString);
 
     hdat.Replace(wxT(","), delim, true);
 	fobj.AddLine(hdat);
@@ -320,6 +353,7 @@ void SPFrame::LayoutSimulationExport(SolarField &SF, wxString &fname, vector<boo
         "%.4f,",        //15 | Cloudiness efficiency
         "%.1f,",        //16 | Annual energy delivery
         "%.4f,",        //17 | Annual total efficiency
+		"%.0f,",        //18 | Receiver number
     };
 
 	//Create the format strings
@@ -334,8 +368,11 @@ void SPFrame::LayoutSimulationExport(SolarField &SF, wxString &fname, vector<boo
 		sp_point* loc = H->getLocation();
         sp_point* aim = H->getAimPoint();
 		Vect* track = H->getTrackVector();
+		//double rec_num = rec_map[H->getWhichReceiver()->getVarMap()->rec_name.val];
+		double rec_num = rec_map[H->getWhichReceiver()];
         std::vector<double> stats;
 		H->getSummaryResults( stats );
+
 
         std::vector< std::vector<double> > all_data;
         all_data.push_back( {(double)H->getId()} );                                       //0 | Heliostat ID Number
@@ -363,6 +400,7 @@ void SPFrame::LayoutSimulationExport(SolarField &SF, wxString &fname, vector<boo
         all_data.push_back({stats.at(helio_perf_data::PERF_VALUES::ETA_CLOUD)} );         //15 | Cloudiness efficiency
         all_data.push_back({stats.at(helio_perf_data::PERF_VALUES::ANNUAL_POWER)} );      //16 | Annual energy delivery
         all_data.push_back({stats.at(helio_perf_data::PERF_VALUES::ANNUAL_EFFICIENCY)} ); //17 | Annual total efficiency
+		all_data.push_back({ rec_num });												  //18 | Receiver number
         
                                                                                             //heliotat shadow coords
 
@@ -421,6 +459,7 @@ void SPFrame::OnLayoutSimulationExport( wxCommandEvent &WXUNUSED(event))
 		15 | Cloudiness efficiency
         16 | Annual energy delivery
         17 | Annual total efficiency
+		18 | Receiver number
 
 		*/
 
