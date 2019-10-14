@@ -2385,7 +2385,8 @@ bool SPFrame::SolTraceFluxSimulation(SolarField &SF, var_map &vset, Hvector &hel
     }
 
     //DNI
-    double dni = vset.sf.dni_des.val/1000.;    //[kw/m2]
+    //double dni = vset.sf.dni_des.val/1000.;    //[kw/m2]
+	double dni = vset.flux.flux_dni.val / 1000.;    //[kw/m2]
     
     //if the heliostat field ray data is loaded from a file, just specify the number of sun rays based on this value
     if(is_load_raydata)
