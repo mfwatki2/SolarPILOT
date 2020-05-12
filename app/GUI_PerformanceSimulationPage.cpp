@@ -81,8 +81,8 @@ void SPFrame::CreateSimulationsFluxTab( wxScrolledWindow *flux)
         *flux_time_type = new InputControl(flux, wxID_ANY, _variables.flux.flux_time_type ),
         *flux_dni = new InputControl(flux, wxID_ANY, _variables.flux.flux_dni ),
         *aim_method = new InputControl(flux, wxID_ANY, _variables.flux.aim_method ),
-        *sigma_limit_x = new InputControl(sigma_panel, wxID_ANY, _variables.flux.sigma_limit_x ),
-        *sigma_limit_y = new InputControl(sigma_panel, wxID_ANY, _variables.flux.sigma_limit_y ),
+        //*sigma_limit_x = new InputControl(sigma_panel, wxID_ANY, _variables.flux.sigma_limit_x ),
+        //*sigma_limit_y = new InputControl(sigma_panel, wxID_ANY, _variables.flux.sigma_limit_y ),
         *norm_dist_sigma = new InputControl(dist_panel, wxID_ANY, _variables.flux.norm_dist_sigma ),
         *flux_dist = new InputControl(sigma_panel, wxID_ANY, _variables.flux.flux_dist ),
         *flux_month = new InputControl(time_panel, wxID_ANY, _variables.flux.flux_month ),
@@ -118,11 +118,8 @@ void SPFrame::CreateSimulationsFluxTab( wxScrolledWindow *flux)
     OutputControl
         *flux_solar_az = new OutputControl(time_panel, wxID_ANY, _variables.flux.flux_solar_az),
         *flux_solar_el = new OutputControl(time_panel, wxID_ANY, _variables.flux.flux_solar_el);
-    {
-    wxWindow* dsibs[] = {aim_method, sigma_limit_x, sigma_limit_y};
-    flux_model->setDisabledSiblings("SolTrace", 3, dsibs);
-    }    //preserve aim points for SolTrace runs
-    _input_map[ &_variables.recs[0].rec_type ]->addDisabledSiblings("External cylindrical", sigma_limit_x);
+    
+	
 
     //save ray data button
     wxBitmap savebit;
@@ -187,17 +184,24 @@ void SPFrame::CreateSimulationsFluxTab( wxScrolledWindow *flux)
     sbs0->Add(azel_panel, 0, wxALL, 5);
     sbs0->Add(time_panel, 0, wxALL, 5);
 
-    wxStaticBox *sb1 = new wxStaticBox(flux, wxID_ANY, "Simulation parameters");
+	_image_offset_factors = new wxGrid(flux, wxID_ANY, wxDefaultPosition);
+	_image_offset_factors->CreateGrid(1, 1);
+	UpdateSigmaGrid();
+	_image_offset_factors->Connect(wxEVT_GRID_CELL_CHANGED, wxGridEventHandler(SPFrame::OnSigmaGridEdit), NULL, this);
+		
+	wxStaticBox *sb1 = new wxStaticBox(flux, wxID_ANY, "Simulation parameters");
     wxStaticBoxSizer *sbs1 = new wxStaticBoxSizer(sb1, wxVERTICAL);
-    
-    sigma_sizer->Add(sigma_limit_y);
-    sigma_sizer->Add(sigma_limit_x);
+
+    //sigma_sizer->Add(sigma_limit_y);
+    //sigma_sizer->Add(sigma_limit_x);
+	sigma_sizer->Add(_image_offset_factors, 1, wxALIGN_CENTER, 0);
     sigma_sizer->Add(flux_dist);
     dist_sizer->Add(norm_dist_sigma);
     dist_panel->SetSizer(dist_sizer);
     sigma_sizer->Add(dist_panel, 0, wxALL, 5);
     sigma_panel->SetSizer(sigma_sizer);
     sbs1->Add(aim_method);
+	//sbs1->Add(_image_offset_factors, 1, wxALIGN_CENTER, 0);
     sbs1->Add(sigma_panel, 0, wxALL, 5);
     
     sbs1->Add(flux_model);
@@ -235,6 +239,13 @@ void SPFrame::CreateSimulationsFluxTab( wxScrolledWindow *flux)
     soltrace_panel->SetSizer(soltrace_sizer);
 
     sbs1->Add(soltrace_panel);
+
+	{
+		//wxWindow* dsibs[] = {aim_method, sigma_limit_x, sigma_limit_y};
+		wxWindow* dsibs[] = { aim_method, _image_offset_factors };
+		flux_model->setDisabledSiblings("SolTrace", 2, dsibs);
+	}    //preserve aim points for SolTrace runs
+	//_input_map[ &_variables.recs[0].rec_type ]->addDisabledSiblings("External cylindrical", sigma_limit_x);
 
     //---- cloud static box
     wxStaticBox *sb3 = new wxStaticBox(flux, wxID_ANY, "Clouds");
@@ -289,7 +300,6 @@ void SPFrame::CreateSimulationsFluxTab( wxScrolledWindow *flux)
     flux_dist->setPanelObject("Normal", *dist_panel);    //normal distribution
     flux_dist->updateInputDisplay();
 
-    
     //Create list control 
     wxArrayStr choices;
     choices.push_back("Slant range");
@@ -327,12 +337,12 @@ void SPFrame::CreateSimulationsFluxTab( wxScrolledWindow *flux)
     flux_sizer->Add(top_sizer);
     flux_sizer->Add(col_sizer, 1, wxEXPAND, 0);
     //Add any input or output controls
-    InputControl *inputs[] = {flux_model, flux_time_type, aim_method, sigma_limit_x, sigma_limit_y, flux_month, flux_day, flux_hour, 
+    InputControl *inputs[] = {flux_model, flux_time_type, aim_method, flux_month, flux_day, flux_hour, 
                               flux_dist, norm_dist_sigma, flux_solar_az_in, flux_solar_el_in, x_res, y_res, min_rays, 
                               max_rays, seed, save_data, is_sunshape_err, is_optical_err, is_cloudy, cloud_shape, 
                               cloud_width, cloud_depth, cloud_opacity, cloud_skew, is_cloud_pattern, cloud_sep_width, 
                               cloud_sep_depth, cloud_loc_x, cloud_loc_y, is_cloud_symd, is_cloud_symw, flux_dni, 
-                              is_load_raydata, is_save_raydata, raydata_file, NULL};
+                              is_load_raydata, is_save_raydata, raydata_file, NULL}; //aim_method, sigma_limit_x, sigma_limit_y,
     int i=0;
     while(inputs[i] != NULL)
     {
@@ -346,7 +356,6 @@ void SPFrame::CreateSimulationsFluxTab( wxScrolledWindow *flux)
         _output_map[ outputs[i]->getVarObject() ] = outputs[i];
         i++;
     }
-
 
     flux->SetSizer(flux_sizer);
     flux->SetScrollbars(10, 10, flux->GetSize().GetWidth()/10, flux->GetSize().GetWidth()/10);
@@ -781,4 +790,99 @@ void SPFrame::OnSTRayDataButton( wxCommandEvent &WXUNUSED(event))
         PopMessage("An unhandled error has occurred and the action could not be completed.", "OnSTRayDataButton Error", wxICON_ERROR|wxOK);
         return;
     }
+}
+
+void SPFrame::UpdateSigmaGrid()
+{
+	/*
+	Update the sigma offset factor grid on the performance simulation page
+	*/
+
+	int nrow = 2;
+	if (_image_offset_factors->GetNumberRows() != nrow) {
+		_image_offset_factors->DeleteRows(0,_image_offset_factors->GetNumberRows());
+		_image_offset_factors->AppendRows(nrow,false);
+		}
+
+	string rows[] = { _variables.recs[0].sigma_limit_x_mod.short_desc, _variables.recs[0].sigma_limit_y_mod.short_desc };
+		_image_offset_factors->SetRowLabelSize(230);
+		for (int i = 0; i < nrow; i++)
+		{
+			_image_offset_factors->SetRowLabelValue(i, rows[i]);
+			//_image_offset_factors->SetColSize(i, 30);
+		}
+
+	// Count how many receivers should go in the table. Only active ones appear
+	int nrec_active = 0;
+	for (int i = 0; i < _variables.recs.size(); i++)
+		if (_variables.recs[i].is_enabled.val)
+			nrec_active++;
+
+	// Set the correct number of columns in the table
+	if (_image_offset_factors->GetNumberCols() > 0) {
+		_image_offset_factors->DeleteCols(0, _image_offset_factors->GetNumberCols());
+		_image_offset_factors->AppendCols(nrec_active, false);
+	}
+
+	// Fill in the data
+	int cur_col = 0;
+	for (int i = 0; i < (int)_variables.recs.size(); i++)
+	{
+		if (!_variables.recs[i].is_enabled.val)
+			continue;
+
+		_image_offset_factors->SetCellValue(0, cur_col, _variables.recs[i].sigma_limit_x_mod.as_string());
+		_image_offset_factors->SetCellValue(1, cur_col, _variables.recs[i].sigma_limit_y_mod.as_string());
+		_image_offset_factors->SetColLabelValue(cur_col, _variables.recs[i].rec_name.val);
+
+		cur_col++;
+	}
+
+}
+
+void SPFrame::OnSigmaGridEdit(wxGridEvent &event)
+{
+	/*
+	If the sigma grid has been updated, handle here
+	*/
+
+	int
+		row = event.GetRow(),
+		col = event.GetCol();
+
+	int which_rec = -1;
+	int rec_flag = 0;
+	for (int i = 0; i < _variables.recs.size(); i++)
+	{
+		if (_variables.recs[i].is_enabled.val)
+		{
+			which_rec++;
+			if (which_rec == col) {
+				which_rec = i;
+				rec_flag = 1;
+			}
+		}
+
+		if (rec_flag == 1) {
+			break;
+		}
+	}
+
+	wxString newtext = _image_offset_factors->GetCellValue(row, col);
+	double newnum;
+
+	if (newtext.ToDouble(&newnum))
+	{
+
+		if (row == 0) {
+			_variables.recs[which_rec].sigma_limit_x_mod.val = newnum;
+		}
+		else if (row == 1) {
+			_variables.recs[which_rec].sigma_limit_y_mod.val = newnum;
+		}
+		_image_offset_factors->SetEvtHandlerEnabled(false);
+		UpdateSigmaGrid();
+		_image_offset_factors->SetEvtHandlerEnabled(true);
+		return;			// if getting this far, then the action is successful. Update and return
+	}
 }

@@ -593,6 +593,7 @@ void SPFrame::OnReceiverAdd( wxCommandEvent& evt )
             _SF.Create(_variables);
 
             UpdateReceiverUITemplates();
+			UpdateSigmaGrid();
             
             //update the input display
             UpdateCalculatedGUIValues();
@@ -897,6 +898,7 @@ void SPFrame::OnReceiverDel( wxCommandEvent &WXUNUSED(event))
             _SF.Create(_variables);
         
             UpdateReceiverUITemplates();
+			UpdateSigmaGrid();
         }
     }
     catch(std::exception &e)
@@ -959,6 +961,7 @@ void SPFrame::OnReceiverState( wxCommandEvent &WXUNUSED(event))
         }
 
         UpdateReceiverUITemplates();
+		UpdateSigmaGrid();
     }
     catch(std::exception &e)
     {
@@ -995,6 +998,7 @@ void SPFrame::OnReceiverRename( wxCommandEvent &WXUNUSED(event))
     dlg->Destroy();
 
     UpdateReceiverUITemplates();
+	UpdateSigmaGrid();
 }
 
 void SPFrame::OnReceiverColor(wxCommandEvent&)
@@ -1073,7 +1077,8 @@ void SPFrame::OnReceiverPowerGridEdit( wxGridEvent &event )
         col = event.GetCol();
     
     //which receiver is this?
-    int which_rec = 0;
+    /*
+	int which_rec = 0;
     {
         int i = 0;
         while (true)
@@ -1090,7 +1095,26 @@ void SPFrame::OnReceiverPowerGridEdit( wxGridEvent &event )
             i++;
         }
     }
-    
+    */
+	int which_rec = -1;
+	int rec_flag = 0;
+	for (int i = 0; i < _variables.recs.size(); i++)
+	{
+		if (_variables.recs[i].is_enabled.val)
+		{
+			which_rec++;
+			if (which_rec == row) {
+				which_rec = i;
+				rec_flag = 1;
+				
+			}
+		}
+
+		if (rec_flag == 1) {
+			break;
+		}
+	}
+
     wxString newtext = _rec_power_fractions->GetCellValue(row, col);
     double newnum;
     //validate

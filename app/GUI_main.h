@@ -399,6 +399,7 @@ private:
     wxStaticText
         *_flux_progress;
     wxBitmapButton *_flux_button;
+	wxGrid *_image_offset_factors;
 
     //optimize page
     wxGauge *_optimize_summary_gauge;
@@ -639,6 +640,7 @@ protected:
     void OnSAMInputButton( wxCommandEvent &event);
     void OnSAMDirSelect( wxCommandEvent &event);
     void OnToggleParametric( wxCommandEvent &event);
+	void OnSigmaGridEdit(wxGridEvent &event);
 
     void OnParAddVar( wxCommandEvent &event);
     void OnParRemoveVar( wxCommandEvent &event);
@@ -703,6 +705,7 @@ public:
     void UpdateCalculatedGUIValues();
     void UpdateFieldPlotSelections();
     void UpdateFluxPlotSelections();
+	void UpdateSigmaGrid();
     
     bool CreateRestorePoint();
     void PreSimulation();
