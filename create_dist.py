@@ -42,20 +42,28 @@ def rec_copy(sdir, ddir, excludes=".svn;.tm2;.tm3;.epw;.smw;.swrf;_Debug.exe;.il
                 if item != "CA Daggett.tm2":
                     skip = True
         if skip: continue
-        
+        '''
         #if it's a file copy it from source to destination
         #use the rule that if '.' appears, it's a file
         if "." in item:
-            print "Copying "+sdir+"\\"+item+" to "+ddir+"\\"+item
+            print ("Copying "+sdir+"\\"+item+" to "+ddir+"\\"+item)
             shutil.copyfile(sdir+"\\"+item, ddir+"\\"+item)
         else:   #it's a path
-            print "Creating directory "+ddir+"\\"+item
+            print ("Creating directory "+ddir+"\\"+item)
             os.mkdir(ddir+"\\"+item)
             rec_copy(sdir+"\\"+item, ddir+"\\"+item, excludes)
+        '''
+        if os.path.isdir('{}/{}'.format(sdir,item)):
+            print ("Creating directory "+ddir+"\\"+item)
+            os.mkdir(ddir+"\\"+item)
+            rec_copy(sdir+"\\"+item, ddir+"\\"+item, excludes)
+        else:
+            print ("Copying "+sdir+"\\"+item+" to "+ddir+"\\"+item)
+            shutil.copyfile(sdir+"\\"+item, ddir+"\\"+item)
             
     
     
 rec_copy(sourcedir, destdir)
     
-print "Complete"
+print ("Complete")
     
